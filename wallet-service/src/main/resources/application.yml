@@ -1,0 +1,42 @@
+server:
+  port: 9090
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+
+  sql:
+    init:
+      mode: always
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/wallet-db
+    username: user
+    password: password
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: info
+        transaction: trace
+        web:
+          client:
+            RestTemplate: debug
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
+
+
+
+

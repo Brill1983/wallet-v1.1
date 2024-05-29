@@ -1,0 +1,35 @@
+version: '3'
+services:
+  gateway:
+    build: gateway
+    image: gateway-image
+    container_name: gateway-container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - wallet-service
+    environment:
+      - WALLET_SERVICE_URL=http://wallet-service:9090
+
+  wallet-service:
+    build: wallet-service
+    image: wallet-service-image
+    container_name: wallet-service-container
+    ports:
+      - "9090:9090"
+    depends_on:
+      - wallet-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://wallet-db:5432/wallet-db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+
+  wallet-db:
+    image: postgres:13.7-alpine
+    container_name: wallet-db
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_DB=wallet-db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
