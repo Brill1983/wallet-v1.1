@@ -8,7 +8,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto:
 
   sql:
     init:
@@ -16,7 +16,7 @@ spring:
 
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/wallet-db
+    url: jdbc:postgresql://localhost:6542/wallet-db
     username: user
     password: password
 

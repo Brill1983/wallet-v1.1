@@ -11,11 +11,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TransactionDtoOut {
+public class TransactionForWallet {
 
     private Long id;
     private LocalDateTime created;
     private Long senderWalletId;
     private Long receiverWalletId;
     private BigDecimal amount;
+    private Boolean isIncoming;
 }

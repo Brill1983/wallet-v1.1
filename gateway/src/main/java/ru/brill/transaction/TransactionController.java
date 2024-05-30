@@ -1,5 +1,6 @@
 package ru.brill.transaction;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -39,14 +40,9 @@ public class TransactionController {
         return transactionsClient.getTransactionsByUserId(userId);
     }
 
-    /**
-     * Если в TransactionDto указан senderWalletId = NULL (т.е. в теле запроса отсутствует),
-     * значит хозяин кошелька пополняет баланс переводом со стороннего сервиса (с карты, сбп и др).
-     * Если указан senderWalletId - значит идет перемещение средств между кошельками внутри системы.
-     */
     @PostMapping
     public ResponseEntity<Object> postTransaction(@RequestHeader(HEADER) Long userId,
-                                                  @RequestBody TransactionDto transactionDto) {
+                                                  @RequestBody @Valid TransactionDto transactionDto) {
         log.info("В метод postTransaction передан userId {}, transactionDto {}", userId, transactionDto);
         return transactionsClient.postTransaction(userId, transactionDto);
     }

@@ -2,9 +2,11 @@ package ru.brill.wallet;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.brill.wallet.dto.AmountDto;
 import ru.brill.wallet.dto.WalletOutDto;
 
 import java.util.List;
@@ -19,10 +21,19 @@ public class WalletController {
 
     private final WalletService walletService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public WalletOutDto createWallet(@RequestHeader(HEADER) Long userId) {
         log.info("В метод saveWallet передан userId {}", userId);
         return walletService.createWallet(userId);
+    }
+
+    @PatchMapping("/{walletId}")
+    public WalletOutDto sendMoneyToWallet(@RequestHeader(HEADER) Long userId,
+                                                    @PathVariable Long walletId,
+                                                    @RequestBody AmountDto amountDto){
+        log.info("В метод sendMoneyToWallet передан userId {}, walletId {}, amountDto {}", userId, walletId, amountDto);
+        return walletService.sendMoneyToWallet(userId, walletId, amountDto);
     }
 
     @GetMapping("/{walletId}")

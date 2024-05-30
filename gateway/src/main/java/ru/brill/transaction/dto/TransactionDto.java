@@ -15,15 +15,16 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TransactionDto {
 
-    @Positive(groups = Create.class, message = "№ кошелька отправителя не может быть меньше или равен 0")
+    @NotNull(message = "Кошелек отправителя обязателен к указанию")
+    @Positive(message = "№ кошелька отправителя не может быть меньше или равен 0")
     private Long senderWalletId;
 
-    @NotNull(groups = Create.class, message = "Кошелек покупателя обязателен к указанию")
-    @Positive(groups = Create.class, message = "№ кошелька получателя не может быть меньше или равен 0")
+    @NotNull(message = "Кошелек получателя обязателен к указанию")
+    @Positive(message = "№ кошелька получателя не может быть меньше или равен 0")
     private Long receiverWalletId;
 
-    @NotNull(groups = Create.class, message = "Сумма перевода не может быть NULL")
-    @Positive(groups = Create.class, message = "Нельзя пополнить баланс на 0 единиц")
-    @Digits(groups = Create.class, integer = 6, fraction = 2)
+    @NotNull(message = "Сумма перевода не может быть NULL")
+    @Positive(message = "Нельзя перевести 0 единиц или отрицательное значение")
+    @Digits(integer = 6, fraction = 2)
     private BigDecimal amount;
 }

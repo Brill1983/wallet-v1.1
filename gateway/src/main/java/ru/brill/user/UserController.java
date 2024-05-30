@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.brill.service.Create;
+import ru.brill.service.Update;
 import ru.brill.user.dto.UserDto;
 
 @Slf4j
@@ -19,13 +20,13 @@ public class UserController {
     private final UserClient userClient;
 
     @PostMapping
-    public ResponseEntity<Object> saveUser(@RequestBody @Validated({Create.class}) UserDto userDto) {
+    public ResponseEntity<Object> saveUser(@RequestBody @Validated(Create.class) UserDto userDto) {
         log.info("В метод saveUser передан userDto {}", userDto);
         return userClient.createUser(userDto);
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<Object> updateUser(@RequestBody @Valid UserDto userDto, @PathVariable Long userId) {
+    public ResponseEntity<Object> updateUser(@RequestBody @Validated(Update.class) UserDto userDto, @PathVariable Long userId) {
         log.info("В метод updateUser передан userId {}, userDto {}", userId, userDto);
         return userClient.updateUser(userDto, userId);
     }
