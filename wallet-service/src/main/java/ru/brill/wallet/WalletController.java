@@ -1,12 +1,13 @@
 package ru.brill.wallet;
 
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.brill.wallet.dto.WalletOutDto;
+
+import java.util.List;
 
 import static ru.brill.service.Constants.HEADER;
 
@@ -14,38 +15,36 @@ import static ru.brill.service.Constants.HEADER;
 @RestController
 @RequestMapping(path = "/wallets")
 @RequiredArgsConstructor
-@Validated
 public class WalletController {
 
-    private final WalletClient walletClient;
+    private final WalletService walletService;
 
     @PostMapping
-    public ResponseEntity<Object> createWallet(@RequestHeader(HEADER) Long userId) {
+    public WalletOutDto createWallet(@RequestHeader(HEADER) Long userId) {
         log.info("В метод saveWallet передан userId {}", userId);
-        return walletClient.createWallet(userId);
+        return walletService.createWallet(userId);
     }
 
-    // Получение кошелька, в нем есть баланс
     @GetMapping("/{walletId}")
-    public ResponseEntity<Object> getWalletWithBalanceById(@RequestHeader(HEADER) Long userId,
-                                                       @PathVariable Long walletId) {
+    public WalletOutDto getWalletWithBalanceById(@RequestHeader(HEADER) Long userId,
+                                                 @PathVariable Long walletId) {
         log.info("В метод getWalletWithBalanceById передан userId {}, walletId {}", userId, walletId);
-        return walletClient.getWalletWithBalanceById(userId, walletId);
+        return walletService.getWalletWithBalanceById(userId, walletId);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getUserWallets(@RequestHeader(HEADER) Long userId,
-                                                 @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                                 @RequestParam(defaultValue = "10") @Positive Integer size) {
+    public List<WalletOutDto> getUserWallets(@RequestHeader(HEADER) Long userId,
+                                             @RequestParam Integer from,
+                                             @RequestParam Integer size) {
         log.info("В метод getUserWallets передан userId {}, индекс первого элемента {}, количество элементов на " +
                 "странице {}", userId, from, size);
-        return walletClient.getUserWallets(userId, from, size);
+        return walletService.getUserWallets(userId, from, size);
     }
 
     @DeleteMapping("/{walletId}")
     public void deleteWallet(@RequestHeader(HEADER) Long userId,
                                                @PathVariable Long walletId) {
         log.info("В метод deleteWallet передан userId {}, walletId {}", userId, walletId);
-        walletClient.deleteWallet(userId, walletId);
+        walletService.deleteWallet(userId, walletId);
     }
 }
