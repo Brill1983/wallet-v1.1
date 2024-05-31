@@ -43,7 +43,7 @@ public class ValidationService {
 
         if (newAmount.compareTo(MAX_WALLET_LIMIT) > 0) {
             throw new RestrictedOperationException("При пополнении на сумму " + amount +
-                    " будет превышен допустимый максимальный лимит кошелька, попробуйте перевод на другой свой кошелек");
+                    " будет превышен допустимый максимальный лимит кошелька, попробуйте перевод на другой кошелек");
         }
     }
 }

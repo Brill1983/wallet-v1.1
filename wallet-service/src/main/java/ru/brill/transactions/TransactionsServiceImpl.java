@@ -36,7 +36,7 @@ public class TransactionsServiceImpl implements TransactionsService {
                 .orElseThrow(() -> new ElementNotFoundException("Кошелек с ID " + walletId + " не зарегистрирован"));
         validator.validWalletBelongsToUser(userId, wallet);
 
-        return transactionRepository.findAllBySenderWalletIdAndReceiverWalletIdOrderByCreatedDesc(walletId, walletId, page)
+        return transactionRepository.findAllBySenderWalletIdOrReceiverWalletIdOrderByCreatedDesc(walletId, walletId, page)
                 .stream()
                 .map(tr -> TransactionMapper.toTransactionForWallet(tr, walletId))
                 .toList();

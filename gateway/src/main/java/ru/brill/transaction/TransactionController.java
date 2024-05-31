@@ -28,7 +28,7 @@ public class TransactionController {
                                                             @RequestParam(defaultValue = "10") @Positive Integer size) {
         log.info("В метод getTransactionsByWalletId передан userId {}, walletId {}, индекс первого элемента {}, " +
                 "количество элементов на странице {}", userId, walletId, from, size);
-        return transactionsClient.getTransactionsByWalletId(userId, walletId);
+        return transactionsClient.getTransactionsByWalletId(userId, walletId, from, size);
     }
 
     @PostMapping

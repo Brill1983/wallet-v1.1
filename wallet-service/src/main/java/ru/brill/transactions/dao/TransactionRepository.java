@@ -7,7 +7,7 @@ import ru.brill.transactions.model.WalletTransaction;
 
 public interface TransactionRepository extends JpaRepository<WalletTransaction, Long> {
 
-    Page<WalletTransaction> findAllBySenderWalletIdAndReceiverWalletIdOrderByCreatedDesc(Long senderWalletId,
+    Page<WalletTransaction> findAllBySenderWalletIdOrReceiverWalletIdOrderByCreatedDesc(Long senderWalletId,
                                                                                          Long receiverWalletId,
                                                                                          Pageable page);
 }

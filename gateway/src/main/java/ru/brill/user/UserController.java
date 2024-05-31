@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<Object> deleteUser(@PathVariable Long userId) {
         log.info("В метод deleteUser передан userId {}", userId);
-        userClient.deleteUser(userId);
+        return userClient.deleteUser(userId);
     }
 }
