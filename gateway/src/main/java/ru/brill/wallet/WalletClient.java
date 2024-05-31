@@ -42,7 +42,7 @@ public class WalletClient extends BaseClient {
         return get("?from={from}&size={size}", userId, params);
     }
 
-    public void deleteWallet(Long userId, Long walletId) {
-        delete("/" + walletId, userId);
+    public ResponseEntity<Object> deleteWallet(Long userId, Long walletId) {
+        return delete("/" + walletId, userId);
     }
 }

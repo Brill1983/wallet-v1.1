@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.brill.exceptions.BadParameterException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -15,13 +14,6 @@ import java.io.StringWriter;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST) // TODO - возможно можно удалить
-    public ErrorResponse handleBadParameterExc(BadParameterException e) {
-        log.info("Validation: {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)

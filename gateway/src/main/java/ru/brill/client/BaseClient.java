@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static ru.brill.service.Constants.HEADER;
 
-public class BaseClient { // TODO переделать на WebClient
+public class BaseClient {
 
     protected final RestTemplate rest;
 

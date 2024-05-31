@@ -27,5 +27,5 @@ public class Wallet {
     private LocalDateTime created;
 
     @Column(name = "balance", nullable = false)
-    private BigDecimal balance; // TODO проверить ошибку при попытке пополнить баланс на более 1 млн
+    private BigDecimal balance;
 }

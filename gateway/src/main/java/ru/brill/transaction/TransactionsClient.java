@@ -9,6 +9,8 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.brill.client.BaseClient;
 import ru.brill.transaction.dto.TransactionDto;
 
+import java.util.Map;
+
 @Service
 public class TransactionsClient extends BaseClient {
 
@@ -23,11 +25,12 @@ public class TransactionsClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getTransactionsByWalletId(Long userId, Long walletId) {
-        return get("/" + walletId, userId);
+    public ResponseEntity<Object> getTransactionsByWalletId(Long userId, Long walletId, Integer from, Integer size) {
+        Map<String, Object> params = Map.of("from", from, "size", size);
+        return get("/" + walletId + "?from={from}&size={size}", userId, params);
     }
 
     public ResponseEntity<Object> postTransaction(Long userId, TransactionDto transactionDto) {
-        return post("/", userId, transactionDto);
+        return post("", userId, transactionDto);
     }
 }
