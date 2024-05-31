@@ -30,12 +30,19 @@ public class WalletController {
     @PatchMapping("/{walletId}")
     public ResponseEntity<Object> sendMoneyToWallet(@RequestHeader(HEADER) Long userId,
                                                     @PathVariable Long walletId,
-                                                    @RequestBody @Valid AmountDto amountDto){
+                                                    @RequestBody @Valid AmountDto amountDto) {
         log.info("В метод sendMoneyToWallet передан userId {}, walletId {}, amountDto {}", userId, walletId, amountDto);
         return walletClient.sendMoneyToWallet(userId, walletId, amountDto);
     }
 
-    // Получение кошелька, в нем есть баланс
+    /**
+     * Для проверки баланса в заголовках передается userId, в переменной пути walletId.
+     * Возвращается ResponseEntity<Object>, содержащая объект WalletOutDto, в котором содержится актуальная информация
+     * по кошельку, включая текущий баланс.
+     *
+     * @param userId
+     * @param walletId
+     */
     @GetMapping("/{walletId}")
     public ResponseEntity<Object> getWalletWithBalanceById(@RequestHeader(HEADER) Long userId,
                                                            @PathVariable Long walletId) {

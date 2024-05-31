@@ -3,7 +3,6 @@ package ru.brill.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.brill.user.dto.UserDto;
@@ -26,7 +25,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(@RequestBody UserDto userDto,
-                                             @PathVariable Long userId) {
+                              @PathVariable Long userId) {
         log.info("В метод updateUser передан userId {}, userDto {}", userId, userDto);
         return userService.updateUser(userDto, userId);
     }

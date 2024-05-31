@@ -1,8 +1,8 @@
 package ru.brill.transactions;
 
 import lombok.experimental.UtilityClass;
-import ru.brill.transactions.dto.TransactionDto;
 import ru.brill.transactions.dto.TransactionDtoOut;
+import ru.brill.transactions.dto.TransactionForWallet;
 import ru.brill.transactions.model.WalletTransaction;
 import ru.brill.wallet.model.Wallet;
 
@@ -28,6 +28,17 @@ public class TransactionMapper {
                 .senderWalletId(transaction.getSenderWallet() != null ? transaction.getSenderWallet().getId() : null)
                 .receiverWalletId(transaction.getReceiverWallet().getId())
                 .amount(transaction.getAmount())
+                .build();
+    }
+
+    public TransactionForWallet toTransactionForWallet(WalletTransaction transaction, Long walletId) {
+        return TransactionForWallet.builder()
+                .id(transaction.getId())
+                .created(transaction.getCreated())
+                .amount(transaction.getAmount())
+                .senderWalletId(transaction.getSenderWallet() != null ? transaction.getSenderWallet().getId() : null)
+                .receiverWalletId(transaction.getReceiverWallet().getId())
+                .isIncoming(transaction.getReceiverWallet().getId().equals(walletId))
                 .build();
     }
 }

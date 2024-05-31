@@ -9,7 +9,6 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.brill.client.BaseClient;
 import ru.brill.wallet.dto.AmountDto;
 
-
 import java.util.Map;
 
 @Service
@@ -31,7 +30,7 @@ public class WalletClient extends BaseClient {
     }
 
     public ResponseEntity<Object> sendMoneyToWallet(Long userId, Long walletId, AmountDto amountDto) {
-        return patch("/"+ walletId, userId, amountDto);
+        return patch("/" + walletId, userId, amountDto);
     }
 
     public ResponseEntity<Object> getWalletWithBalanceById(Long userId, Long walletId) {

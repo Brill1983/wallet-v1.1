@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
-import ru.brill.service.Create;
 
 import java.math.BigDecimal;
 
@@ -25,6 +24,6 @@ public class TransactionDto {
 
     @NotNull(message = "Сумма перевода не может быть NULL")
     @Positive(message = "Нельзя перевести 0 единиц или отрицательное значение")
-    @Digits(integer = 6, fraction = 2)
+    @Digits(integer = 6, fraction = 2, message = "Нельзя перевести более 999 999,99 единиц")
     private BigDecimal amount;
 }

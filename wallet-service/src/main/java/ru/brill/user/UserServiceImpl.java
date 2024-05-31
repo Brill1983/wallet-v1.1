@@ -3,16 +3,16 @@ package ru.brill.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.brill.exceptions.ElementNotFoundException;
 import ru.brill.service.ValidationService;
 import ru.brill.user.dao.UserRepository;
 import ru.brill.user.dto.UserDto;
-import ru.brill.exceptions.ElementNotFoundException;
 import ru.brill.user.model.User;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ValidationService validator;

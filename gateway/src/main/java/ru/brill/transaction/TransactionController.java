@@ -31,15 +31,6 @@ public class TransactionController {
         return transactionsClient.getTransactionsByWalletId(userId, walletId);
     }
 
-    @GetMapping
-    public ResponseEntity<Object> getTransactionsByUserId(@RequestHeader(HEADER) Long userId,
-                                                          @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                                          @RequestParam(defaultValue = "10") @Positive Integer size) {
-        log.info("В метод getTransactionsByUserId передан userId {}, индекс первого элемента {}, " +
-                "количество элементов на странице {}", userId, from, size);
-        return transactionsClient.getTransactionsByUserId(userId);
-    }
-
     @PostMapping
     public ResponseEntity<Object> postTransaction(@RequestHeader(HEADER) Long userId,
                                                   @RequestBody @Valid TransactionDto transactionDto) {

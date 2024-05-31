@@ -49,11 +49,11 @@ public class WalletServiceImpl implements WalletService {
         validator.validBalanceLimit(wallet, amount);
 
         WalletTransaction transaction = TransactionMapper.toNewWalletTransaction(null, wallet, amount);
-        transactionRepository.save(transaction); // Сохранили транзакцию
+        transactionRepository.save(transaction);
 
         BigDecimal newBalance = wallet.getBalance().add(amount);
         wallet.setBalance(newBalance);
-        return WalletMapper.toWalletOutDto(walletRepository.save(wallet)); // Сохранили новый баланс
+        return WalletMapper.toWalletOutDto(walletRepository.save(wallet));
     }
 
     @Override

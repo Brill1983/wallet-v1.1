@@ -1,6 +1,5 @@
 package ru.brill.wallet;
 
-import org.springframework.http.ResponseEntity;
 import ru.brill.wallet.dto.AmountDto;
 import ru.brill.wallet.dto.WalletOutDto;
 

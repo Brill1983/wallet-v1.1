@@ -17,15 +17,15 @@ import ru.brill.service.Update;
 public class UserDto {
 
     @NotNull(groups = {Create.class}, message = "Имя пользователя обязательно к заполнению и не может быть пустым")
-    @NameConstraint
+    @NameConstraint(groups = {Create.class, Update.class})
     private String firstName;
 
     @NotNull(groups = {Create.class}, message = "Фамилия пользователя обязательна к заполнению и не может быть пустой")
-    @NameConstraint
+    @NameConstraint(groups = {Create.class, Update.class})
     private String lastName;
 
     @NotBlank(groups = {Create.class}, message = "Электронная почта не может быть пустой")
     @Email(groups = {Create.class, Update.class}, message = "Передан неправильный формат email")
-    @Size(max = 50)
+    @Size(groups = {Create.class, Update.class}, max = 50)
     private String email;
 }

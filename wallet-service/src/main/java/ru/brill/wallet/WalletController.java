@@ -3,8 +3,6 @@ package ru.brill.wallet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.brill.wallet.dto.AmountDto;
 import ru.brill.wallet.dto.WalletOutDto;
@@ -30,8 +28,8 @@ public class WalletController {
 
     @PatchMapping("/{walletId}")
     public WalletOutDto sendMoneyToWallet(@RequestHeader(HEADER) Long userId,
-                                                    @PathVariable Long walletId,
-                                                    @RequestBody AmountDto amountDto){
+                                          @PathVariable Long walletId,
+                                          @RequestBody AmountDto amountDto) {
         log.info("В метод sendMoneyToWallet передан userId {}, walletId {}, amountDto {}", userId, walletId, amountDto);
         return walletService.sendMoneyToWallet(userId, walletId, amountDto);
     }
@@ -54,7 +52,7 @@ public class WalletController {
 
     @DeleteMapping("/{walletId}")
     public void deleteWallet(@RequestHeader(HEADER) Long userId,
-                                               @PathVariable Long walletId) {
+                             @PathVariable Long walletId) {
         log.info("В метод deleteWallet передан userId {}, walletId {}", userId, walletId);
         walletService.deleteWallet(userId, walletId);
     }

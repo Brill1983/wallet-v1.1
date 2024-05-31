@@ -9,9 +9,16 @@ public class NameValidator implements ConstraintValidator<NameConstraint, String
     public void initialize(NameConstraint constraintAnnotation) {
     }
 
+    /**
+     * Комбинированная проверка: Содержит ли строка буквы одного алфавита и допустимые пробелы или дефисы между словами.
+     * Также проверяется, что не происходит смешивание алфавитов в одной строке.
+     */
     @Override
     public boolean isValid(String value,
                            ConstraintValidatorContext context) {
+        if (value == null) {
+            return true;
+        }
         if (value.equals(" ") || value.length() < 1 || value.length() > 32) { // Длина от 1 до 32 символов.
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
@@ -20,8 +27,6 @@ public class NameValidator implements ConstraintValidator<NameConstraint, String
             return false;
         }
 
-        // Комбинированная проверка: Содержит ли строка буквы одного алфавита и допустимые пробелы или дефисы между словами.
-        // Также проверяется, что не происходит смешивание алфавитов в одной строке.
         boolean isRussian = value.matches("^[а-яА-ЯёЁ]+([-\\s]?[а-яА-ЯёЁ]+)*$");
         boolean isEnglish = value.matches("^[a-zA-Z]+([-\\s]?[a-zA-Z]+)*$");
 

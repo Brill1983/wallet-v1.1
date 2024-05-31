@@ -3,7 +3,6 @@ package ru.brill.transactions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.brill.transactions.dto.TransactionDto;
 import ru.brill.transactions.dto.TransactionDtoOut;
@@ -28,16 +27,7 @@ public class TransactionController {
                                                                 @RequestParam Integer size) {
         log.info("В метод getTransactionsByWalletId передан userId {}, walletId {}, индекс первого элемента {}, " +
                 "количество элементов на странице {}", userId, walletId, from, size);
-        return transactionsService.getTransactionsByWalletId(userId, walletId);
-    }
-
-    @GetMapping
-    public ResponseEntity<Object> getTransactionsByUserId(@RequestHeader(HEADER) Long userId,
-                                                          @RequestParam Integer from,
-                                                          @RequestParam Integer size) {
-        log.info("В метод getTransactionsByUserId передан userId {}, индекс первого элемента {}, " +
-                "количество элементов на странице {}", userId, from, size);
-        return transactionsService.getTransactionsByUserId(userId);
+        return transactionsService.getTransactionsByWalletId(userId, walletId, from, size);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

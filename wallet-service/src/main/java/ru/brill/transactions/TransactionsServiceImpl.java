@@ -1,7 +1,8 @@
 package ru.brill.transactions;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.brill.exceptions.ElementNotFoundException;
@@ -28,13 +29,17 @@ public class TransactionsServiceImpl implements TransactionsService {
     private final ValidationService validator;
 
     @Override
-    public List<TransactionForWallet> getTransactionsByWalletId(Long userId, Long walletId) {
-        return null;
-    }
+    public List<TransactionForWallet> getTransactionsByWalletId(Long userId, Long walletId, Integer from, Integer size) {
+        validator.validUserId(userId);
+        Pageable page = PageRequest.of(from / size, size);
+        Wallet wallet = walletRepository.findById(walletId)
+                .orElseThrow(() -> new ElementNotFoundException("Кошелек с ID " + walletId + " не зарегистрирован"));
+        validator.validWalletBelongsToUser(userId, wallet);
 
-    @Override
-    public ResponseEntity<Object> getTransactionsByUserId(Long userId) {
-        return null;
+        return transactionRepository.findAllBySenderWalletIdAndReceiverWalletIdOrderByCreatedDesc(walletId, walletId, page)
+                .stream()
+                .map(tr -> TransactionMapper.toTransactionForWallet(tr, walletId))
+                .toList();
     }
 
     @Override

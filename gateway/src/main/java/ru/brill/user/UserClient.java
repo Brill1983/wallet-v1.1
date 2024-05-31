@@ -13,6 +13,7 @@ import ru.brill.user.dto.UserDto;
 public class UserClient extends BaseClient {
 
     private static final String API_PREFIX = "/users";
+
     @Autowired
     public UserClient(@Value("${wallet-service.url}") String serverUrl, RestTemplateBuilder builder) {
         super(

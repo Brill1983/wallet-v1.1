@@ -27,10 +27,6 @@ public class TransactionsClient extends BaseClient {
         return get("/" + walletId, userId);
     }
 
-    public ResponseEntity<Object> getTransactionsByUserId(Long userId) {
-        return get("/", userId);
-    }
-
     public ResponseEntity<Object> postTransaction(Long userId, TransactionDto transactionDto) {
         return post("/", userId, transactionDto);
     }
