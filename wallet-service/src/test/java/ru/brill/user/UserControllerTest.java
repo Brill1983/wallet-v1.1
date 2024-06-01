@@ -36,7 +36,7 @@ public class UserControllerTest {
 
 
     @BeforeEach
-    public void itemCreate() {
+    public void create() {
         userDto = new UserDto(1L, "Иван", "Иванович", "ii@mail.ru");
     }
 

@@ -1,13 +1,16 @@
 package ru.brill.user;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+import ru.brill.exceptions.ElementNotFoundException;
 import ru.brill.user.dto.UserDto;
 import ru.brill.user.model.User;
 
@@ -22,10 +25,15 @@ public class UserServiceImplTest {
 
     private final EntityManager em;
     private final UserService service;
+    UserDto userDto;
+
+    @BeforeEach
+    public void create() {
+        userDto = new UserDto(null, "Иван", "Иванович", "ii@mail.ru");
+    }
 
     @Test
     void createUser() {
-        UserDto userDto = makeUserDto(null, "Иван", "Иванович", "ii@mail.ru");
 
         service.createUser(userDto);
 
@@ -38,12 +46,91 @@ public class UserServiceImplTest {
         assertThat(user.getEmail(), equalTo((userDto.getEmail())));
     }
 
-    private UserDto makeUserDto(Long id, String firstName, String lastName, String email) {
-        UserDto userDto = new UserDto();
-        userDto.setId(id);
-        userDto.setFirstName(firstName);
-        userDto.setLastName(lastName);
-        userDto.setEmail(email);
-        return userDto;
+    @Test
+    void updateUser() {
+
+        service.createUser(userDto);
+
+        TypedQuery<User> query = em.createQuery("select u from User u where u.email = :email", User.class);
+        User user = query.setParameter("email", userDto.getEmail())
+                .getSingleResult();
+
+        assertThat(user.getId(), equalTo(1L));
+        assertThat(user.getFirstName(), equalTo(userDto.getFirstName()));
+        assertThat(user.getLastName(), equalTo(userDto.getLastName()));
+        assertThat(user.getEmail(), equalTo((userDto.getEmail())));
+
+        UserDto userDtoForUpdate = new UserDto(null, "Петр", null, "pp@mail.ru");
+
+        service.updateUser(userDtoForUpdate, 1L);
+
+        query = em.createQuery("select u from User u where u.id = :id", User.class);
+        user = query.setParameter("id", 1L)
+                .getSingleResult();
+
+        assertThat(user.getId(), equalTo(1L));
+        assertThat(user.getFirstName(), equalTo(userDtoForUpdate.getFirstName()));
+        assertThat(user.getLastName(), equalTo(userDto.getLastName()));
+        assertThat(user.getEmail(), equalTo((userDtoForUpdate.getEmail())));
+    }
+
+    @Test
+    void updateUserWithWrongId() {
+        UserDto userDtoForUpdate = new UserDto(null, "Петр", null, "pp@mail.ru");
+        try {
+            service.updateUser(userDtoForUpdate, 2L);
+        } catch (ElementNotFoundException thrown) {
+            assertThat(thrown.getMessage(), equalTo("Пользователь с ID " + 2L + " не зарегистрирован"));
+            assertThat(thrown.getClass(), equalTo(ElementNotFoundException.class));
+        }
+    }
+
+    @Test
+    void getUserById() {
+
+        service.createUser(userDto);
+
+        UserDto user = service.getUserById(1L);
+
+        assertThat(user.getId(), equalTo(1L));
+        assertThat(user.getFirstName(), equalTo(userDto.getFirstName()));
+        assertThat(user.getLastName(), equalTo(userDto.getLastName()));
+        assertThat(user.getEmail(), equalTo((userDto.getEmail())));
+    }
+
+    @Test
+    void getUserByIdWithWrongUserId() {
+        try {
+            service.getUserById(2L);
+        } catch (ElementNotFoundException thrown) {
+            assertThat(thrown.getMessage(), equalTo("Пользователь с ID " + 2L + " не зарегистрирован"));
+            assertThat(thrown.getClass(), equalTo(ElementNotFoundException.class));
+        }
+    }
+
+    @Test
+    void deleteUser() {
+
+        service.createUser(userDto);
+
+        service.deleteUser(1L);
+
+        TypedQuery<User> query = em.createQuery("select u from User u where u.id = :id", User.class);
+        try {
+            query.setParameter("id", 1L)
+                    .getSingleResult();
+        } catch (NoResultException thrown) {
+            assertThat(thrown.getClass(), equalTo(NoResultException.class));
+        }
+    }
+
+    @Test
+    void deleteUserWithWrongId() {
+        try {
+            service.deleteUser(2L);
+        } catch (ElementNotFoundException thrown) {
+            assertThat(thrown.getMessage(), equalTo("Пользователь с ID " + 2L + " не зарегистрирован"));
+            assertThat(thrown.getClass(), equalTo(ElementNotFoundException.class));
+        }
     }
 }

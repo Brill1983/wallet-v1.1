@@ -22,10 +22,12 @@ public class WalletTransaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_wallet_id")
+    @ToString.Exclude
     private Wallet senderWallet;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_wallet_id")
+    @ToString.Exclude
     private Wallet receiverWallet;
 
     @Column(name = "created", nullable = false)
