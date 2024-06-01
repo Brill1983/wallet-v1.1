@@ -4,10 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.brill.exceptions.ElementNotFoundException;
+import ru.brill.exceptions.RestrictedOperationException;
 import ru.brill.service.ValidationService;
 import ru.brill.user.dao.UserRepository;
 import ru.brill.user.dto.UserDto;
 import ru.brill.user.model.User;
+import ru.brill.wallet.WalletService;
+import ru.brill.wallet.dao.WalletRepository;
+import ru.brill.wallet.model.Wallet;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @Transactional
@@ -16,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ValidationService validator;
+    private final WalletRepository walletRepository;
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -44,6 +52,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         validator.validUserId(userId);
+        List<Wallet> usersWallets = walletRepository.findAllByUserIdAndBalanceNot(userId, BigDecimal.ZERO);
+        if (!usersWallets.isEmpty()) {
+            throw new RestrictedOperationException("Нельзя удалить пользователя, к которого есть кошельки с ненулевым балансом. " +
+                    "У пользователя с ID " + userId + " таких кошельков " + usersWallets.size());
+        }
         userRepository.deleteById(userId);
     }
 }

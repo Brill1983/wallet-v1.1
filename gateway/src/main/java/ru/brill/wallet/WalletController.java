@@ -61,7 +61,7 @@ public class WalletController {
 
     @DeleteMapping("/{walletId}")
     public ResponseEntity<Object> deleteWallet(@RequestHeader(HEADER) Long userId,
-                             @PathVariable Long walletId) {
+                                               @PathVariable Long walletId) {
         log.info("В метод deleteWallet передан userId {}, walletId {}", userId, walletId);
         return walletClient.deleteWallet(userId, walletId);
     }
