@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+import ru.brill.service.SenderNotEqualReceiver;
 
 import java.math.BigDecimal;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@SenderNotEqualReceiver
 public class TransactionDto {
 
     @NotNull(message = "Кошелек отправителя обязателен к указанию")

@@ -42,7 +42,7 @@ public class TransactionTest {
     private ResponseEntity<Object> transactionResponse;
 
     @BeforeEach
-    public void ceate() {
+    public void create() {
         transactionDto = new TransactionDto(1L, 2L, BigDecimal.valueOf(123.45));
         transactionResponse = new ResponseEntity<>(transactionDto, HttpStatus.OK);
     }
@@ -72,6 +72,22 @@ public class TransactionTest {
     @Test
     void postTransactionWithNullSenderWalletTest() throws Exception {
         transactionDto.setSenderWalletId(null);
+
+        mvc.perform(post("/transactions")
+                        .header(HEADER, 1)
+                        .content(mapper.writeValueAsString(transactionDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(transactionsClient, never())
+                .postTransaction(anyLong(), any());
+    }
+
+    @Test
+    void postTransactionWithSenderEqualsReceiverWalletTest() throws Exception {
+        transactionDto.setReceiverWalletId(1L);
 
         mvc.perform(post("/transactions")
                         .header(HEADER, 1)
