@@ -1,19 +1,16 @@
 package ru.brill.transactions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.brill.transactions.dto.TransactionDtoOut;
+import ru.brill.transactions.dto.TransactionForWallet;
 import ru.brill.transactions.model.WalletTransaction;
 import ru.brill.user.model.User;
-import ru.brill.wallet.WalletMapper;
-import ru.brill.wallet.dto.WalletOutDto;
 import ru.brill.wallet.model.Wallet;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TransactionMapperTest {
 
@@ -25,7 +22,7 @@ public class TransactionMapperTest {
 
     @Test
     void toNewWalletTransactionTest() {
-        WalletTransaction transaction = TransactionMapper.toNewWalletTransaction(wallet1,wallet2, BigDecimal.ONE);
+        WalletTransaction transaction = TransactionMapper.toNewWalletTransaction(wallet1, wallet2, BigDecimal.ONE);
 
         assertEquals(wallet1.getId(), transaction.getSenderWallet().getId());
         assertEquals(wallet2.getId(), transaction.getReceiverWallet().getId());
@@ -36,10 +33,45 @@ public class TransactionMapperTest {
     @Test
     void toTransactionDtoOutTest() {
         TransactionDtoOut transaction = TransactionMapper.toTransactionDtoOut(walletTransaction);
-
         assertEquals(walletTransaction.getId(), transaction.getId());
         assertEquals(walletTransaction.getSenderWallet().getId(), transaction.getSenderWalletId());
         assertEquals(walletTransaction.getReceiverWallet().getId(), transaction.getReceiverWalletId());
+        assertEquals(walletTransaction.getCreated(), transaction.getCreated());
+        assertEquals(walletTransaction.getAmount(), transaction.getAmount());
+    }
 
+    @Test
+    void toTransactionDtoOutWithSenderNullTest() {
+        walletTransaction.setSenderWallet(null);
+        TransactionDtoOut transaction = TransactionMapper.toTransactionDtoOut(walletTransaction);
+
+        assertEquals(walletTransaction.getId(), transaction.getId());
+        assertNull(transaction.getSenderWalletId());
+        assertEquals(walletTransaction.getReceiverWallet().getId(), transaction.getReceiverWalletId());
+        assertEquals(walletTransaction.getCreated(), transaction.getCreated());
+        assertEquals(walletTransaction.getAmount(), transaction.getAmount());
+    }
+
+    @Test
+    void toTransactionForWalletTest() {
+        TransactionForWallet transaction = TransactionMapper.toTransactionForWallet(walletTransaction, 1L);
+        assertEquals(walletTransaction.getId(), transaction.getId());
+        assertEquals(walletTransaction.getSenderWallet().getId(), transaction.getSenderWalletId());
+        assertEquals(walletTransaction.getReceiverWallet().getId(), transaction.getReceiverWalletId());
+        assertEquals(walletTransaction.getCreated(), transaction.getCreated());
+        assertEquals(walletTransaction.getAmount(), transaction.getAmount());
+        assertFalse(transaction.getIsIncoming());
+    }
+
+    @Test
+    void toTransactionForWalletWithSenderNullTest() {
+        walletTransaction.setSenderWallet(null);
+        TransactionForWallet transaction = TransactionMapper.toTransactionForWallet(walletTransaction, 1L);
+        assertEquals(walletTransaction.getId(), transaction.getId());
+        assertNull(transaction.getSenderWalletId());
+        assertEquals(walletTransaction.getReceiverWallet().getId(), transaction.getReceiverWalletId());
+        assertEquals(walletTransaction.getCreated(), transaction.getCreated());
+        assertEquals(walletTransaction.getAmount(), transaction.getAmount());
+        assertFalse(transaction.getIsIncoming());
     }
 }

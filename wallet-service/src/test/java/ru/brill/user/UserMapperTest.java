@@ -14,7 +14,7 @@ public class UserMapperTest {
 
     @BeforeEach
     public void create() {
-        user =  new User(1L, "Иван", "Иванович", "ii@Mail.ru");
+        user = new User(1L, "Иван", "Иванович", "ii@Mail.ru");
         userDto = new UserDto(1L, "Иван", "Иванович", "ii@mail.ru");
     }
 
