@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.brill.exceptions.ElementNotFoundException;
 import ru.brill.exceptions.RestrictedOperationException;
@@ -20,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(isolation = Isolation.SERIALIZABLE)
 @RequiredArgsConstructor
 public class TransactionsServiceImpl implements TransactionsService {
 
@@ -29,6 +30,7 @@ public class TransactionsServiceImpl implements TransactionsService {
     private final ValidationService validator;
 
     @Override
+    @Transactional(readOnly = true)
     public List<TransactionForWallet> getTransactionsByWalletId(Long userId, Long walletId, Integer from, Integer size) {
         validator.validUserId(userId);
         Pageable page = PageRequest.of(from / size, size);
