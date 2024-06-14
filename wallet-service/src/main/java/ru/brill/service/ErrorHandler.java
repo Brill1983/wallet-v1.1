@@ -12,6 +12,7 @@ import ru.brill.exceptions.RestrictedOperationException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 
 @Slf4j
 @RestControllerAdvice
@@ -41,8 +42,16 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ErrorResponse handleRestrictedOperationExc(RestrictedOperationException e) {
-        log.info("Element not found: {}", e.getMessage());
+        log.info("Restricted operation: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ErrorResponse handleRestrictedOperationExc(SQLException e) {
+        log.info("Restricted operation: {}", e.getMessage());
+        return new ErrorResponse("Транзакция отменена, произошли стороннее изменения в процессе исполнения." +
+                "Попробуйте выполнить транзакцию снова.");
     }
 
     @ExceptionHandler

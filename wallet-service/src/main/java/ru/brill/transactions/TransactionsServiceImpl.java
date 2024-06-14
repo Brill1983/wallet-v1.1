@@ -18,7 +18,6 @@ import ru.brill.wallet.dao.WalletRepository;
 import ru.brill.wallet.model.Wallet;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -47,46 +46,35 @@ public class TransactionsServiceImpl implements TransactionsService {
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public TransactionDtoOut postTransaction(Long userId, TransactionDto transactionDto) {
-        TransactionDtoOut transactionBacked;
-        try {
-            BigDecimal amount = transactionDto.getAmount();
-            validator.validUserId(userId);
+        BigDecimal amount = transactionDto.getAmount();
+        validator.validUserId(userId);
 
-            Wallet senderWallet = walletRepository.findById(transactionDto.getSenderWalletId())
-                    .orElseThrow(() -> new ElementNotFoundException("Кошелек с ID " + transactionDto.getSenderWalletId() +
-                            " не зарегистрирован"));
-            validator.validWalletBelongsToUser(userId, senderWallet);
+        Wallet senderWallet = walletRepository.findById(transactionDto.getSenderWalletId())
+                .orElseThrow(() -> new ElementNotFoundException("Кошелек с ID " + transactionDto.getSenderWalletId() +
+                        " не зарегистрирован"));
+        validator.validWalletBelongsToUser(userId, senderWallet);
 
-            if (amount.compareTo(senderWallet.getBalance()) > 0) {
-                throw new RestrictedOperationException("Денег на кошельке с ID " + senderWallet.getId() +
-                        " меньше чем запрошенная сумма перевода " + amount);
-            }
-
-            Wallet receiverWallet = walletRepository.findById(transactionDto.getReceiverWalletId())
-                    .orElseThrow(() -> new ElementNotFoundException("Кошелек с ID " + transactionDto.getReceiverWalletId() +
-                            " не зарегистрирован"));
-
-            validator.validBalanceLimit(receiverWallet, amount);
-
-            WalletTransaction transaction = TransactionMapper.toNewWalletTransaction(senderWallet, receiverWallet, amount);
-
-            BigDecimal newBalance = senderWallet.getBalance().subtract(amount);
-            senderWallet.setBalance(newBalance);
-            walletRepository.save(senderWallet);
-
-            newBalance = receiverWallet.getBalance().add(amount);
-            receiverWallet.setBalance(newBalance);
-            walletRepository.save(receiverWallet);
-
-            transactionBacked = TransactionMapper.toTransactionDtoOut(transactionRepository.save(transaction));
-        } catch(Exception ex) { // В случае гонки данных выбросится исключение. Его надо отловить и рекурсивно повторить транзакцию.
-            // Такое решение может быть не оптимальным.
-            if (ex instanceof SQLException) {
-                transactionBacked = postTransaction(userId, transactionDto);
-                return transactionBacked;
-            }
-            throw new RuntimeException(ex);
+        if (amount.compareTo(senderWallet.getBalance()) > 0) {
+            throw new RestrictedOperationException("Денег на кошельке с ID " + senderWallet.getId() +
+                    " меньше чем запрошенная сумма перевода " + amount);
         }
-        return transactionBacked;
+
+        Wallet receiverWallet = walletRepository.findById(transactionDto.getReceiverWalletId())
+                .orElseThrow(() -> new ElementNotFoundException("Кошелек с ID " + transactionDto.getReceiverWalletId() +
+                        " не зарегистрирован"));
+
+        validator.validBalanceLimit(receiverWallet, amount);
+
+        WalletTransaction transaction = TransactionMapper.toNewWalletTransaction(senderWallet, receiverWallet, amount);
+
+        BigDecimal newBalance = senderWallet.getBalance().subtract(amount);
+        senderWallet.setBalance(newBalance);
+        walletRepository.save(senderWallet);
+
+        newBalance = receiverWallet.getBalance().add(amount);
+        receiverWallet.setBalance(newBalance);
+        walletRepository.save(receiverWallet);
+
+        return TransactionMapper.toTransactionDtoOut(transactionRepository.save(transaction));
     }
 }

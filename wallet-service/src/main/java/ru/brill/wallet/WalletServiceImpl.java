@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.brill.exceptions.ElementNotFoundException;
 import ru.brill.exceptions.RestrictedOperationException;
@@ -22,7 +23,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
 
@@ -32,6 +32,7 @@ public class WalletServiceImpl implements WalletService {
     private final TransactionRepository transactionRepository;
 
     @Override
+    @Transactional
     public WalletOutDto createWallet(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ElementNotFoundException("Пользователь с ID " + userId + " не зарегистрирован"));
@@ -40,6 +41,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public WalletOutDto sendMoneyToWallet(Long userId, Long walletId, AmountDto amountDto) {
         validator.validUserId(userId);
         Wallet wallet = walletRepository.findById(walletId)
@@ -77,6 +79,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void deleteWallet(Long userId, Long walletId) {
         validator.validUserId(userId);
         Wallet wallet = walletRepository.findById(walletId)
